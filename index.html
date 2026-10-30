@@ -1,0 +1,210 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Build Rush 3D</title><style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#101827;color:#f4f7ff;font:14px system-ui,-apple-system,sans-serif}html:fullscreen,body:fullscreen{width:100%;height:100%;overflow:hidden}html:-webkit-full-screen,body:-webkit-full-screen{width:100%;height:100%;overflow:hidden}
+html:fullscreen #br-root,html:-webkit-full-screen #br-root{width:100vw;height:100vh;max-width:none;margin:0;border:0;border-radius:0;display:flex;flex-direction:column;overflow:hidden}html:fullscreen #br-root #br-stage,html:-webkit-full-screen #br-root #br-stage{flex:1;min-height:0;overflow:hidden}html:fullscreen #br-root #br-canvas,html:-webkit-full-screen #br-root #br-canvas{width:100%;height:100%;display:block}#br-root{max-width:1000px;margin:0 auto;background:#101827;border:1px solid #344256;border-radius:14px;overflow:hidden}#br-root:fullscreen{width:100vw;height:100vh;max-width:none;margin:0;border:0;border-radius:0;display:flex;flex-direction:column}#br-root:fullscreen #br-stage{flex:1;min-height:0}#br-root:fullscreen #br-canvas{width:100%;height:100%;display:block}#br-root:-webkit-full-screen{width:100vw;height:100vh;max-width:none;margin:0;border:0;border-radius:0;display:flex;flex-direction:column}#br-root:-webkit-full-screen #br-stage{flex:1;min-height:0}#br-root:-webkit-full-screen #br-canvas{width:100%;height:100%;display:block}#br-fullscreen{font:700 13px system-ui;padding:7px 11px;border:1px solid #49617b;border-radius:8px;background:#24364d;color:#f4f7ff;cursor:pointer;white-space:nowrap}#br-fullscreen:hover{background:#314965}#br-build-buttons{display:flex;gap:5px;flex-wrap:wrap}#br-90s{font:700 12px system-ui;padding:6px 8px;border:1px solid #4f7b91;border-radius:7px;background:#17455b;color:#f4f7ff;cursor:pointer}#br-90s.active{background:#087f8c;border-color:#8cefff}#br-build-buttons button{font:700 12px system-ui;padding:6px 8px;border:1px solid #49617b;border-radius:7px;background:#24364d;color:#f4f7ff;cursor:pointer}#br-build-buttons button:hover{background:#314965}#br-root.br-expanded{position:fixed;inset:0;z-index:2147483647;width:100vw;height:100vh;height:100dvh;max-width:none;margin:0;border:0;border-radius:0;display:flex;flex-direction:column;overflow:hidden;background:#101827}#br-root.br-expanded #br-head{flex-shrink:0}#br-root.br-expanded #br-foot{flex-shrink:0}#br-root.br-expanded #br-stage{flex:1;min-height:0;overflow:hidden}#br-root.br-expanded #br-canvas{width:100%;height:100%;object-fit:fill}#br-root.br-expanded #br-canvas{width:100%;height:100%;display:block}#br-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;background:#182437;border-bottom:1px solid #344256}#br-head strong{font-size:19px}#br-head .sub{font-size:12px;opacity:.75}#br-stats{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;font-weight:700}#br-stage{position:relative;background:#91cfe7;line-height:0}#br-canvas{display:block;width:100%;height:auto;outline:none;touch-action:none;cursor:crosshair}#br-root.br-locked #br-canvas,#br-root.br-locked #br-stage{cursor:none!important}#br-root.br-locked #br-cross{display:block}#br-root:not(.br-locked) #br-cross{display:none}#br-canvas:hover{cursor:crosshair}#br-root.br-expanded.br-locked,#br-root.br-expanded.br-locked *{cursor:none!important}#br-cross{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 0 2px #182437)}#br-cross:before,#br-cross:after{content:"";position:absolute;background:white}#br-cross:before{left:8px;top:0;width:2px;height:18px}#br-cross:after{left:0;top:8px;width:18px;height:2px}#br-toast{position:absolute;top:10px;left:50%;transform:translateX(-50%);max-width:94%;padding:7px 12px;background:#101827dd;border-radius:8px;color:#fff;font-size:13px;line-height:1.3;text-align:center;white-space:nowrap;pointer-events:none}#br-over{display:none;position:absolute;inset:0;background:#101827dd;align-items:center;justify-content:center;flex-direction:column;gap:10px;line-height:1.4;text-align:center}#br-over button{font:700 14px system-ui;padding:9px 14px;border:0;border-radius:8px;background:#65d5ff;color:#08111f;cursor:pointer}#br-foot{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;padding:10px 14px;background:#182437;font-size:12px;line-height:1.7}#br-foot b,#br-stats b{color:#9de6ff}
+</style></head><body><div id="br-root"><header id="br-head"><div><strong>BUILD RUSH <span style="color:#6dd6ff">3D</span></strong><div class="sub">Third-person · aim to build · fight bots</div></div><div id="br-stats"><div id="br-build-buttons"><button type="button" data-build="wall">Wall Z</button><button type="button" data-build="floor">Floor X</button><button type="button" data-build="stairs">Stairs C</button><button type="button" data-build="cone">Cone V</button><button id="br-90s" type="button" title="Toggle rapid wall-floor-stair 90s building">90s: OFF</button></div><button id="br-fullscreen" type="button" aria-label="Toggle fullscreen">⛶ Fullscreen</button><span>HP <b id="br-hp">100</b></span><span>SHIELD <b id="br-shield">50</b></span><span>METAL <b id="br-metal">∞</b></span><span>ELIMS <b id="br-kills">0</b></span></div></header><div id="br-stage"><canvas id="br-canvas" width="960" height="540" tabindex="0" aria-label="Build Rush game"></canvas><div id="br-cross"></div><div id="br-toast">Move mouse to look · click game to capture mouse · Z wall · X floor · C stairs · V cone</div><div id="br-over"><strong style="font-size:34px">YOU'RE DOWN</strong><div id="br-dead-text"></div><button id="br-reset">PLAY AGAIN</button></div></div><footer id="br-foot"><div><b>MOVE</b> WASD · <b>LOOK</b> Mouse (camera follows mouse; click to capture) · <b>JUMP</b> Space · <b>SPRINT</b> Shift</div><div><b>Z</b> Wall · <b>X</b> Floor · <b>C</b> Stairs · <b>V</b> Cone · <b>B</b> Build/combat · <b>E</b> Edit · <b>R</b> Rotate · <b>Left click</b> Place/fire · <b>90s button</b> wall/floor/stairs combo; turn 90° and repeat · <b>Esc</b> release mouse</div></footer></div>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id),canvas=$('br-canvas'),ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height,F=500,PI=Math.PI,TAU=2*PI,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+let keys=Object.create(null),yaw=0,pitch=.16,buildMode=false,selected='wall',rotation=0,ninetyMode=false,ninetyStep=0,hp=100,shield=50,metal=200,kills=0,elapsed=0,last=performance.now(),lastShot=-2,toastTill=0,fireHeld=false,rightHeld=false,lastMouse=null,gameOver=false,flash=0,shotFlash=0,player,bots,builds,faces=[],cam={x:0,y:2.2,z:-7},activeCam,aim=null;
+const crates=[[-8,3],[7,8],[-10,-9],[11,-4],[3,-12],[-4,12]];
+const INFINITE_MATERIALS=true;
+const colors={wall:['#718798','#b3c2cc','#526778','#8197a7','#4a5d6b','#657a89'],floor:['#687b8b','#b9c7d0','#536575','#8295a5','#465766','#637786'],stairs:['#718795','#acbac5','#536a79','#7c909f','#4a5d6b','#667b8b'],cone:['#ae8754','#d9b579','#7d5c36','#b9915b','#6e4e2f','#997043'],player:['#1767bf','#2a8fff','#11549a','#2383d2','#194976','#1c6bb2'],bot:['#af3541','#ee5962','#7a252d','#d84951','#632129','#ac3842'],legs:['#1b3552','#426080','#14263c','#314962','#111e30','#273c55'],skin:['#f0c6a3','#ffe0bd','#bc9273','#d8ae8c','#98745c','#c49a7b']};
+function say(s,t=1.5){$('br-toast').textContent=s;toastTill=elapsed+t}
+function hud(){$('br-hp').textContent=Math.ceil(Math.max(0,hp));$('br-shield').textContent=Math.ceil(Math.max(0,shield));$('br-metal').textContent='∞';$('br-kills').textContent=kills}
+function reset(){keys=Object.create(null);yaw=0;pitch=.16;buildMode=false;selected='wall';rotation=0;ninetyMode=false;ninetyStep=0;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';hp=100;shield=50;metal=200;kills=0;elapsed=0;last=performance.now();lastShot=-2;fireHeld=false;gameOver=false;flash=0;shotFlash=0;player={x:0,z:0,y:0,vy:0,yaw:0,grounded:true};builds=[];bots=[];for(let i=0;i<8;i++){let a=i/8*TAU+.15;bots.push({x:Math.sin(a)*15,z:Math.cos(a)*15,y:0,vy:0,yaw:0,hp:100,alive:true,attack:.8+i*.11})}$('br-over').style.display='none';syncCamera();hud();say('Infinite metal · Z wall · X floor · C stairs · V cone · E edit',3)}
+function direction(){return{x:Math.sin(yaw)*Math.cos(pitch),y:-Math.sin(pitch),z:Math.cos(yaw)*Math.cos(pitch)}}
+function syncCamera(){const d=direction(),rx=Math.cos(yaw),rz=-Math.sin(yaw);cam={x:player.x-d.x*7+rx*.95,y:player.y+2.15,z:player.z-d.z*7+rz*.95}}
+function project(p){let dx=p.x-activeCam.x,dy=p.y-activeCam.y,dz=p.z-activeCam.z,sy=Math.sin(yaw),cy=Math.cos(yaw),sp=Math.sin(pitch),cp=Math.cos(pitch);let right=dx*cy-dz*sy,depth=dx*sy*cp-dy*sp+dz*cy*cp,up=dx*sy*sp+dy*cp+dz*cy*sp;if(depth<=.12)return null;return{x:W/2+right*F/depth,y:H/2-up*F/depth,z:depth}}
+function poly(points,color,stroke='rgba(15,27,39,.22)'){const v=points.map(project);if(v.some(p=>!p))return;faces.push({v,color,stroke,depth:v.reduce((n,p)=>n+p.z,0)/v.length})}
+const cubeFaces=[[0,1,3,2],[4,6,7,5],[0,4,5,1],[2,3,7,6],[0,2,6,4],[1,5,7,3]];
+function box(c,d,r,palette){const [w,h,l]=d,co=Math.cos(r||0),si=Math.sin(r||0),v=[];for(let i=0;i<8;i++){let x=(i&1)?w/2:-w/2,y=(i&2)?h/2:-h/2,z=(i&4)?l/2:-l/2;v.push({x:c.x+x*co+z*si,y:c.y+y,z:c.z-x*si+z*co})}cubeFaces.forEach((f,i)=>poly(f.map(j=>v[j]),palette[i]))}
+function local(a,x,y,z){let c=Math.cos(a.yaw||0),s=Math.sin(a.yaw||0);return{x:a.x+x*c+z*s,y:a.y+y,z:a.z-x*s+z*c}}
+function actorBox(a,x,y,z,w,h,d,p){box(local(a,x,y,z),[w,h,d],a.yaw||0,p)}
+function actor(a,enemy=false){let p=enemy?colors.bot:colors.player;actorBox(a,0,.43,0,.43,.82,.34,colors.legs);actorBox(a,0,1.06,0,.68,.55,.4,p);actorBox(a,0,1.60,0,.42,.42,.4,colors.skin);actorBox(a,-.29,1.05,0,.19,.64,.22,p);actorBox(a,.29,1.05,0,.19,.64,.22,p);actorBox(a,-.14,.23,0,.22,.47,.24,colors.legs);actorBox(a,.14,.23,0,.22,.47,.24,colors.legs);if(!enemy)actorBox(a,.34,1.1,.5,.12,.12,.7,['#202a34','#53616c','#171e26','#333e47','#12171c','#26323c'])}
+function localXZ(b,x,z){let dx=x-b.x,dz=z-b.z,c=Math.cos(b.rot||0),s=Math.sin(b.rot||0);return{x:dx*c-dz*s,z:dx*s+dz*c}}
+function buildSurfaceHeight(b,x,z){
+ const q=localXZ(b,x,z);
+ if(b.type==='floor') return Math.abs(q.x)<=1.42&&Math.abs(q.z)<=1.42?b.y:null;
+ if(b.type==='stairs'&&Math.abs(q.x)<=1.42&&Math.abs(q.z)<=1.5){
+  let t=clamp((q.z+1.5)/3,0,1);if(b.edited)t=1-t;
+  const step=clamp(Math.ceil(t*4-1e-5),0,4);return b.y+step*(2.3/4);
+ }
+ if(b.type==='cone'&&Math.abs(q.x)<=1.48&&Math.abs(q.z)<=1.48){
+  const t=1-Math.max(Math.abs(q.x),Math.abs(q.z))/1.5;
+  return b.y+Math.floor(clamp(t,0,1)*4+1e-5)*(2.1/4);
+ }
+ return null;
+}
+function surfaceAt(x,z){
+ let h=0;
+ for(const b of builds){const bh=buildSurfaceHeight(b,x,z);if(bh!==null&&bh>h)h=bh;}
+ return h;
+}
+function build(b,ghost=false,valid=true){let p=ghost?(valid?['rgba(55,238,255,.4)','rgba(130,252,255,.45)','rgba(40,205,240,.3)','rgba(82,229,255,.38)','rgba(32,177,210,.28)','rgba(70,216,245,.38)']:['rgba(255,75,80,.38)','rgba(255,130,110,.4)','rgba(205,40,55,.32)','rgba(255,92,82,.38)','rgba(150,30,45,.3)','rgba(220,60,70,.38)']):colors[b.type],r=b.rot||0,co=Math.cos(r),si=Math.sin(r),pt=(x,y,z)=>({x:b.x+x*co+z*si,y:b.y+y,z:b.z-x*si+z*co});
+ if(b.type==='wall'){if(b.edited&&!ghost){box({x:b.x-1.03*co,y:b.y+1.5,z:b.z+1.03*si},[.82,3,.24],r,p);box({x:b.x+1.03*co,y:b.y+1.5,z:b.z-1.03*si},[.82,3,.24],r,p);box({x:b.x,y:b.y+2.75,z:b.z},[1.34,.5,.24],r,p)}else box({x:b.x,y:b.y+1.5,z:b.z},[3.08,3,.24],r,p)}
+ else if(b.type==='floor'){box({x:b.x,y:b.y-.1,z:b.z},[3.08,.2,3.08],r,p)}
+ else if(b.type==='stairs'){poly([pt(-1.4,0,-1.5),pt(1.4,0,-1.5),pt(1.4,2.3,1.5),pt(-1.4,2.3,1.5)],ghost?p[4]:'#5c7181');for(let i=1;i<=4;i++){let t=i/4,z=-1.5+t*3,y=t*2.3;poly([pt(-1.45,y,z),pt(1.45,y,z),pt(1.45,y+.13,z),pt(-1.45,y+.13,z)],p[i%p.length])}}
+ else if(b.type==='cone'){let q=[pt(-1.5,0,-1.5),pt(1.5,0,-1.5),pt(1.5,0,1.5),pt(-1.5,0,1.5)],top=pt(0,2.1,0);for(let i=0;i<4;i++)poly([q[i],q[(i+1)%4],top],p[i]);poly(q,ghost?p[4]:'#5a4934')}}
+function line(a,b,color){const p=project(a),q=project(b);if(!p||!q)return;ctx.strokeStyle=color;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}
+function buildTarget(){
+ // Snap a deterministic build cell just ahead of the player. The previous wide
+ // search could silently choose a distant cell, making rapid 90s sequences impossible.
+ const snappedYaw=Math.round(yaw/(PI/2))*PI/2,rot=snappedYaw+rotation,fx=Math.sin(snappedYaw),fz=Math.cos(snappedYaw);
+ const ahead=3.0;
+ let x,z;
+ if(selected==='wall'){
+   // Put a wall on the edge of the player's current 3-unit cell, exactly
+   // centered on the perpendicular axis. This keeps it aligned with stairs.
+   const cellX=Math.round(player.x/3)*3, cellZ=Math.round(player.z/3)*3;
+   if(Math.abs(fx)>0.5){x=cellX+Math.sign(fx)*1.5;z=cellZ;}
+   else{x=cellX;z=cellZ+Math.sign(fz)*1.5;}
+ } else {
+   x=Math.round((player.x+fx*ahead)/3)*3;
+   z=Math.round((player.z+fz*ahead)/3)*3;
+   // If grid rounding puts a piece too close, step one grid farther.
+   if(Math.hypot(x-player.x,z-player.z)<1.55){x=Math.round((player.x+fx*4.5)/3)*3;z=Math.round((player.z+fz*4.5)/3)*3;}
+ }
+ x=clamp(x,-24,24);z=clamp(z,-24,24);
+ const sameCell=(b)=>Math.hypot(b.x-x,b.z-z)<(selected==='wall'?1.05:.8);
+ const crateBlocked=crates.some(([cx,cz])=>Math.abs(cx-x)<2.05&&Math.abs(cz-z)<2.05);
+ const occupiedType=builds.some(b=>sameCell(b)&&b.type===selected&&Math.abs((b.y||0)-(selected==='floor'&&ninetyMode?Math.max(2.3,Math.ceil((player.y+.1)/2.3)*2.3):(b.y||0)))<.6);
+ let y=0;
+ if(selected==='floor') y=ninetyMode?Math.max(2.3,Math.ceil((player.y+.1)/2.3)*2.3):Math.max(0,Math.round(player.y/2.3)*2.3);
+ else if(selected==='stairs') y=ninetyMode?Math.max(0,Math.floor(player.y/2.3)*2.3):Math.max(0,Math.round(player.y/2.3)*2.3);
+ else y=Math.max(0,Math.round(player.y/2.3)*2.3);
+ const occupied=builds.some(b=>sameCell(b)&&b.type===selected&&Math.abs((b.y||0)-y)<.6);
+ // Different piece types may share a tile/edge (e.g. stairs over a floor,
+ // or stairs meeting a wall). Only reject near-identical centers that would
+ // completely occupy the same spot; the same piece type is checked above.
+ const overlapsSameHeight=builds.some(b=>Math.abs((b.y||0)-y)<.6 && Math.hypot(b.x-x,b.z-z)<.62 && b.type!==selected);
+ return {x,z,y,rot,valid:!crateBlocked&&!occupied&&!overlapsSameHeight&&Math.abs(x)<=24&&Math.abs(z)<=24};
+}
+function place(){
+ const a=buildTarget();if(!a||!a.valid){say('That piece is already there or blocked. Turn 90° or move forward.',1);return}
+ builds.push({x:a.x,z:a.z,y:a.y||0,rot:a.rot,type:selected,edited:false});
+ if(ninetyMode){ninetyStep=(ninetyStep+1)%3;selected=['wall','floor','stairs'][ninetyStep];$('br-90s').textContent='90s: ON · '+selected.toUpperCase();}
+ hud();say((ninetyMode?'90s · ':'')+selected.toUpperCase()+' ready · turn 90° and keep placing',.7)
+}
+function edit(){let target=buildTarget(),best=null,bd=7;for(const b of builds){let d=Math.hypot(b.x-player.x,b.z-player.z),forward=(b.x-player.x)*Math.sin(yaw)+(b.z-player.z)*Math.cos(yaw);if(d<bd&&forward>-.5){bd=d;best=b}}if(target){for(const b of builds){if(Math.hypot(b.x-target.x,b.z-target.z)<2){best=b;break}}}if(!best){say('Look at a nearby build and press E.');return}best.edited=!best.edited;say(best.type.toUpperCase()+(best.edited?' EDITED':' RESET')+(best.type==='wall'?' · doorway toggled':''))}
+function shoot(){if(gameOver)return;let d=direction(),c=cam,best=null,bestT=100;for(const b of bots){if(!b.alive)continue;let dx=b.x-c.x,dy=1.1-c.y,dz=b.z-c.z,t=dx*d.x+dy*d.y+dz*d.z;if(t<=.2||t>bestT)continue;let px=dx-d.x*t,py=dy-d.y*t,pz=dz-d.z*t;if(Math.hypot(px,py,pz)<1.25){best=b;bestT=t}}shotFlash=.14;if(best){best.hp-=34;flash=.17;if(best.hp<=0){best.alive=false;kills++;metal+=30;hud();say('BOT ELIMINATED · +30 metal')}else say('HIT · '+best.hp+' HP left',.5)}else say('Miss · aim the crosshair on a bot',.5)}
+function action(){if(gameOver)return;syncCamera();if(buildMode)place();else shoot()}
+function hurt(n){let x=n;if(shield>0){let s=Math.min(shield,x);shield-=s;x-=s}hp-=x;hud();if(hp<=0){hp=0;gameOver=true;fireHeld=false;$('br-dead-text').textContent='Eliminations: '+kills;$('br-over').style.display='flex';if((document.pointerLockElement===canvas||document.webkitPointerLockElement===canvas))document.exitPointerLock()}}
+function resolveRect(actor,b,cx,hx,hz,radius,priorX=actor.x,priorZ=actor.z){
+ const q=localXZ(b,actor.x,actor.z),pq=localXZ(b,priorX,priorZ),lx=q.x-cx,lz=q.z,priorLx=pq.x-cx,priorLz=pq.z;
+ const px=hx+radius-Math.abs(lx),pz=hz+radius-Math.abs(lz);
+ if(px<=0||pz<=0)return false;
+ let nx=lx,nz=lz;
+ if(px<pz)nx=Math.sign(lx||priorLx||1)*(hx+radius+.002);else nz=Math.sign(lz||priorLz||1)*(hz+radius+.002);
+ const localX=nx+cx,localZed=nz,c=Math.cos(b.rot||0),s=Math.sin(b.rot||0);
+ actor.x=b.x+localX*c+localZed*s;actor.z=b.z-localX*s+localZed*c;
+ return true;
+}
+function resolveObstacles(actor,radius,priorX=actor.x,priorZ=actor.z){
+ // Repeated passes handle corners where a wall and a crate meet.
+ for(let pass=0;pass<3;pass++){
+  for(const b of builds){if(b.type!=='wall')continue;
+   const feet=actor.y||0,head=feet+1.8;if(head<=b.y||feet>=b.y+3)continue;
+   if(!b.edited)resolveRect(actor,b,0,1.5,.13,radius,priorX,priorZ);
+   else {resolveRect(actor,b,-1.03,.41,.13,radius,priorX,priorZ);resolveRect(actor,b,1.03,.41,.13,radius,priorX,priorZ);if(head>b.y+2.5)resolveRect(actor,b,0,.67,.13,radius,priorX,priorZ);}
+  }
+  for(const [x,z] of crates){if((actor.y||0)>1.58)continue;const fake={x,z,rot:0};resolveRect(actor,fake,0,1,1,radius,priorX,priorZ);}
+ }
+}
+function moveEntity(actor,dx,dz,radius){
+ // Substeps avoid tunnelling through thin walls at sprint speed; axis-separated
+ // resolution lets the player and bots slide along the wall instead of passing through.
+ const steps=Math.max(1,Math.ceil(Math.max(Math.abs(dx),Math.abs(dz))/.12));
+ for(let i=0;i<steps;i++){
+  let px=actor.x,pz=actor.z;actor.x+=dx/steps;resolveObstacles(actor,radius,px,pz);
+  px=actor.x;pz=actor.z;actor.z+=dz/steps;resolveObstacles(actor,radius,px,pz);
+ }
+ actor.x=clamp(actor.x,-25,25);actor.z=clamp(actor.z,-25,25);
+}
+function applyBuildSupports(actor,oldY,radius){
+ actor.grounded=false;
+ let candidates=[0];
+ for(const b of builds){const h=buildSurfaceHeight(b,actor.x,actor.z);if(h!==null)candidates.push(h);}
+ candidates.sort((a,b)=>b-a);
+ // The player/bots can step onto stair/cone risers (~0.5 units), and can land
+ // on a raised floor when falling onto it. They cannot teleport up to tall platforms.
+ for(const h of candidates){
+  if(h>oldY+.61)continue;
+  if(actor.y<=h+.15&&actor.vy<=0){actor.y=h;actor.vy=0;actor.grounded=true;return;}
+ }
+}
+function collide(oldY){resolveObstacles(player,.34);applyBuildSupports(player,oldY,.34)}
+function update(dt){
+ if(gameOver)return;elapsed+=dt;const oldY=player.y;
+ let f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0),s=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0),m=Math.hypot(f,s);
+ if(m){f/=m;s/=m;let speed=(keys.ShiftLeft||keys.ShiftRight)?9:5.5;const dx=(f*Math.sin(yaw)+s*Math.cos(yaw))*speed*dt,dz=(f*Math.cos(yaw)-s*Math.sin(yaw))*speed*dt;moveEntity(player,dx,dz,.34)}
+ if(keys.Space&&player.grounded&&player.vy<=0){player.vy=7;player.grounded=false;player.y+=.03}
+ player.vy-=17*dt;player.y+=player.vy*dt;if(player.y<0){player.y=0;player.vy=0;player.grounded=true}
+ player.x=clamp(player.x,-25,25);player.z=clamp(player.z,-25,25);collide(oldY);
+ for(const b of bots){if(!b.alive)continue;const oldBotY=b.y||0,dx=player.x-b.x,dz=player.z-b.z,d=Math.hypot(dx,dz);b.yaw=Math.atan2(dx,dz);
+  if(d>1.6){const speed=.95,moveX=dx/(d||1)*speed*dt,moveZ=dz/(d||1)*speed*dt;moveEntity(b,moveX,moveZ,.32);b.vy=b.vy||0;b.vy-=17*dt;b.y=(b.y||0)+b.vy*dt;if(b.y<0){b.y=0;b.vy=0}applyBuildSupports(b,oldBotY,.32)}
+  else{b.attack-=dt;if(b.attack<=0){hurt(4);b.attack=1.5}}
+ }
+ player.yaw=yaw;syncCamera();if(fireHeld&&elapsed-lastShot>.25){action();lastShot=elapsed}hud();
+ if(elapsed>toastTill&&document.pointerLockElement!==canvas)$('br-toast').textContent='Infinite metal · Z wall · X floor · C stairs · V cone · E edit';
+}
+function render(){
+ activeCam=cam;faces=[];
+ const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#74b9e5');sky.addColorStop(.58,'#c6e8ef');sky.addColorStop(1,'#b5d3a0');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+ // Ground plane and a visible grid give the player a stable horizon and scale.
+ poly([{x:-32,y:-.08,z:-32},{x:32,y:-.08,z:-32},{x:32,y:-.08,z:32},{x:-32,y:-.08,z:32}],'#72945f');
+ for(let n=-30;n<=30;n+=3){line({x:n,y:0,z:-30},{x:n,y:0,z:30},'rgba(28,62,44,.25)');line({x:-30,y:0,z:n},{x:30,y:0,z:n},'rgba(28,62,44,.25)')}
+ for(const [x,z] of crates)box({x,y:.8,z},[2,1.6,2],.08,['#9b7449','#c39b67','#745337','#ad8759','#67482f','#8c673f']);
+ for(const b of builds)build(b,false,true);
+ if(buildMode){const target=buildTarget();if(target)build({x:target.x,y:target.y||0,z:target.z,rot:target.rot,type:selected,edited:false},true,target.valid)}
+ for(const b of bots)if(b.alive)actor(b,true);
+ actor(player,false);
+ faces.sort((a,b)=>b.depth-a.depth);
+ for(const f of faces){ctx.beginPath();ctx.moveTo(f.v[0].x,f.v[0].y);for(let i=1;i<f.v.length;i++)ctx.lineTo(f.v[i].x,f.v[i].y);ctx.closePath();ctx.fillStyle=f.color;ctx.fill();if(f.stroke){ctx.strokeStyle=f.stroke;ctx.lineWidth=1;ctx.stroke()}}
+ // Aim and status cues stay above the projected 3D scene.
+ if(shotFlash>0){shotFlash=Math.max(0,shotFlash-.016);ctx.strokeStyle='rgba(255,245,180,.8)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(W/2,H/2);ctx.lineTo(W/2+18,H/2-10);ctx.stroke()}
+ if(flash>0){flash=Math.max(0,flash-.016);ctx.fillStyle='rgba(255,70,70,.10)';ctx.fillRect(0,0,W,H)}
+ const alive=bots.filter(b=>b.alive).length;ctx.fillStyle='rgba(10,20,30,.72)';ctx.fillRect(12,12,150,28);ctx.fillStyle='#f4f7ff';ctx.font='bold 13px system-ui';ctx.fillText('BOTS LEFT  '+alive,22,31);
+ if(buildMode){ctx.fillStyle='rgba(10,20,30,.78)';ctx.fillRect(W/2-70,H-38,140,25);ctx.fillStyle='#9deeff';ctx.textAlign='center';ctx.font='bold 13px system-ui';ctx.fillText('BUILD: '+selected.toUpperCase(),W/2,H-21);ctx.textAlign='left'}
+}
+function frame(now){const dt=clamp((now-last)/1000,0,.035);last=now;update(dt);render();requestAnimationFrame(frame)}
+canvas.addEventListener('mouseenter',e=>{if(document.pointerLockElement!==canvas&&document.webkitPointerLockElement!==canvas)lastMouse={x:e.clientX,y:e.clientY}});canvas.addEventListener('mouseleave',()=>{if(document.pointerLockElement!==canvas&&document.webkitPointerLockElement!==canvas)lastMouse=null});canvas.addEventListener('mousedown',e=>{canvas.focus();if(e.button===0){fireHeld=true;action();lastShot=elapsed;/* Lock on click so the camera can follow mouse movement without right-click. */if(document.pointerLockElement!==canvas&&document.webkitPointerLockElement!==canvas){const lock=canvas.requestPointerLock||canvas.webkitRequestPointerLock;if(lock){try{const p=lock.call(canvas);if(p&&typeof p.catch==='function')p.catch(()=>say('Mouse capture blocked here; move the mouse over the game to look.',3))}catch(err){say('Mouse capture blocked here; move the mouse over the game to look.',3)}}}}e.preventDefault()});document.addEventListener('mouseup',e=>{if(e.button===0)fireHeld=false});canvas.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('mousemove',e=>{const locked=(document.pointerLockElement===canvas||document.webkitPointerLockElement===canvas);if(locked){$('br-cross').style.display='block';$('br-cross').style.left='50%';$('br-cross').style.top='50%';yaw+=e.movementX*.0027;pitch=clamp(pitch+e.movementY*.002,.035,.72);syncCamera()}else if(canvas.matches(':hover')){if(lastMouse){const dx=e.clientX-lastMouse.x,dy=e.clientY-lastMouse.y;if(Math.abs(dx)+Math.abs(dy)>0){yaw+=dx*.0027;pitch=clamp(pitch+dy*.002,.035,.72);syncCamera()}}lastMouse={x:e.clientX,y:e.clientY}}});
+document.addEventListener('keydown',e=>{if(e.code==='KeyF'&&!e.repeat&&(document.activeElement===canvas||canvas.matches(':hover')||document.pointerLockElement===canvas||document.webkitPointerLockElement===canvas)){e.preventDefault();fsButton.click();return;}if(document.pointerLockElement!==canvas&&document.webkitPointerLockElement!==canvas&&document.activeElement!==canvas&&!canvas.matches(':hover'))return;keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.repeat)return;switch(e.code){case'KeyB':buildMode=!buildMode;say(buildMode?'BUILD MODE · aim and left-click':'COMBAT MODE · left-click fires');break;case'KeyZ':ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected='wall';buildMode=true;say('WALL selected');break;case'KeyX':ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected='floor';buildMode=true;say('FLOOR selected');break;case'KeyC':ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected='stairs';buildMode=true;say('STAIRS selected');break;case'KeyV':ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected='cone';buildMode=true;say('CONE selected');break;case'KeyE':edit();break;case'KeyR':rotation=(rotation+PI/2)%TAU;say('Build rotated 90°');break;case'Digit1':ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected='wall';buildMode=true;break;case'Digit2':ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected='floor';buildMode=true;break;case'Digit3':ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected='stairs';buildMode=true;break;case'Digit4':ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected='cone';buildMode=true;break}});document.addEventListener('keyup',e=>{keys[e.code]=false});const onPointerLockChange=()=>{const locked=(document.pointerLockElement===canvas||document.webkitPointerLockElement===canvas);gameRoot.classList.toggle('br-locked',locked);if(locked){lastMouse=null;say('Mouse captured · move mouse to look · Esc releases',2)}else{lastMouse=null;if(!gameOver)say('Move mouse to look · click to capture mouse',2)}};document.addEventListener('pointerlockchange',onPointerLockChange);document.addEventListener('webkitpointerlockchange',onPointerLockChange);document.addEventListener('pointerlockerror',()=>{gameRoot.classList.remove('br-locked');$('br-cross').style.display='none';say('Mouse capture was denied. The embedded preview cannot keep your cursor inside; open the downloaded HTML in a standalone browser tab.',6)});$('br-reset').addEventListener('click',()=>{reset();canvas.focus()});
+const fsButton=$('br-fullscreen'),gameRoot=$('br-root');
+function nativeFullscreen(){return !!(document.fullscreenElement||document.webkitFullscreenElement)}
+function syncFullscreenButton(){
+ if(nativeFullscreen()){fsButton.textContent='⤢ Exit Fullscreen';fsButton.title='Exit browser fullscreen';}
+ else if(gameRoot.classList.contains('br-expanded')){fsButton.textContent='⤢ Exit Expanded';fsButton.title='Expanded page view only';}
+ else{fsButton.textContent='⛶ Fullscreen';fsButton.title='Enter browser fullscreen';}
+}
+fsButton.addEventListener('click',async()=>{
+ if(nativeFullscreen()){
+  try{if(document.exitFullscreen)await document.exitFullscreen();else if(document.webkitExitFullscreen)document.webkitExitFullscreen();}catch(err){say('Press Esc to leave fullscreen.',3)}
+  syncFullscreenButton();return;
+ }
+ if(gameRoot.classList.contains('br-expanded')){gameRoot.classList.remove('br-expanded');syncFullscreenButton();return;}
+ // Presentation-style fullscreen: prefer the whole document, then the game root.
+ let entered=false;
+ for(const target of [document.documentElement,gameRoot]){
+  try{
+   const fn=target.requestFullscreen||target.webkitRequestFullscreen;
+   if(!fn)continue;
+   const result=fn.call(target);
+   if(result&&typeof result.then==='function')await result;
+   entered=nativeFullscreen();if(entered)break;
+  }catch(err){}
+ }
+ if(entered){syncFullscreenButton();canvas.focus();return;}
+ // Embedded previews can deny native fullscreen. Expand the game to the viewport as a fallback.
+ gameRoot.classList.add('br-expanded');syncFullscreenButton();
+ say('Expanded view only: ChatGPT may block true browser fullscreen. Open this downloaded HTML in Safari as its own tab, then press Control–Command–F.',8);
+ canvas.focus();
+});
+document.addEventListener('fullscreenchange',syncFullscreenButton);
+document.addEventListener('webkitfullscreenchange',syncFullscreenButton);
+document.querySelectorAll('[data-build]').forEach(btn=>btn.addEventListener('click',()=>{ninetyMode=false;$('br-90s').classList.remove('active');$('br-90s').textContent='90s: OFF';selected=btn.dataset.build;buildMode=true;canvas.focus();say(selected.toUpperCase()+' selected · click to place');}));
+$('br-90s').addEventListener('click',()=>{ninetyMode=!ninetyMode;ninetyStep=0;selected='wall';buildMode=true;$('br-90s').classList.toggle('active',ninetyMode);$('br-90s').textContent=ninetyMode?'90s: ON · WALL':'90s: OFF';canvas.focus();say(ninetyMode?'90s BUILD ENABLED · place wall, floor, stairs; turn 90° and repeat':'90s build disabled · manual piece selection',3)});
+window.addEventListener('error',e=>{const t=$('br-toast');if(t)t.textContent='Game error: '+(e.message||'unknown error')+' · reload this file';});
+reset();requestAnimationFrame(frame);
+})();
+</script></body></html>
